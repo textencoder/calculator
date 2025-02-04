@@ -56,6 +56,7 @@ document.querySelector("#equal").addEventListener("click", () => {
       return;
     }
     result = operate(Number(firstNumber), Number(secondNumber), operatorInput);
+    console.log('result values: ', Number(firstNumber), Number(secondNumber), operatorInput)
     if (result % 1 == 0) {
       updateResultContainer(result);
     } else if (result % 1 != 0) {
@@ -105,6 +106,7 @@ function chainEquation(button) {
 }
 
 function addToFirst(button) {
+  result = 0;
   firstNumber += button.value;
   updateResultContainer(firstNumber);
   console.log("first number", firstNumber);
