@@ -1,8 +1,9 @@
 const resultContainer = document.getElementById("result");
 
-let firstNumber = null;
-let secondNumber = null;
+let firstNumber = '';
+let secondNumber = '';
 let operatorInput = null;
+let operatorHit = false;
 let result = null;
 
 function operate(a, b, operator) {
@@ -17,27 +18,28 @@ function operate(a, b, operator) {
 }
 
 document.querySelector("#clear-btn").addEventListener("click", () => {
-  firstNumber = null;
-  secondNumber = null;
+  resetValues();
   result = null;
   updateResultContainer(0);
+  enableOperators();
 });
 
 document.querySelectorAll("#numbers button").forEach((button) => {
   button.addEventListener("click", () => {
-    if (result) {
+    if (result && operatorHit) {
       firstNumber = result;
-      secondNumber = Number(button.value);
+      secondNumber += button.value;
       updateResultContainer(secondNumber);
+      console.log("second number", secondNumber);
       return;
-    } else if (!firstNumber) {
-      firstNumber = Number(button.value);
-      updateResultContainer(firstNumber);
-      console.log("first number", firstNumber);
     }
 
-    if (firstNumber && operatorInput && !secondNumber) {
-      secondNumber = Number(button.value);
+    if (!operatorHit) {
+      firstNumber += button.value;
+      updateResultContainer(firstNumber);
+      console.log("first number", firstNumber);
+    } else if (operatorHit) {
+      secondNumber += button.value;
       updateResultContainer(secondNumber);
       console.log("second number", secondNumber);
     }
@@ -47,18 +49,20 @@ document.querySelectorAll("#numbers button").forEach((button) => {
 document.querySelectorAll("#operators button:not(#equal)").forEach((button) => {
   button.addEventListener("click", () => {
     operatorInput = button.id;
+    operatorHit = true;
+    disableOperators();
     console.log(operatorInput);
   });
 });
 
 document.querySelector("#equal").addEventListener("click", () => {
   if (firstNumber && secondNumber && operatorInput) {
-    if (firstNumber == 0 && operatorInput == "multiply") {
-      result = 0;
-      updateResultContainer(result);
-      console.log(result);
-    } else {
-      result = operate(firstNumber, secondNumber, operatorInput);
+      if (Number(firstNumber) == 0 || Number(secondNumber) == 0) {
+        updateResultContainer('invalid');
+        resetValues();
+        return;
+      }
+      result = operate(Number(firstNumber), Number(secondNumber), operatorInput);
       if (result % 1 == 0) {
         updateResultContainer(result);
       } else if (result % 1 != 0) {
@@ -66,13 +70,31 @@ document.querySelector("#equal").addEventListener("click", () => {
         updateResultContainer(result);
       }
       console.log("result", result);
-      firstNumber = null;
-      secondNumber = null;
-      operatorInput = null;
+      resetValues();
     }
   }
-});
+);
 
 function updateResultContainer(num) {
   resultContainer.textContent = num;
+}
+
+function resetValues() {
+      firstNumber = '';
+      secondNumber = '';
+      operatorInput = null;
+      operatorHit = false;
+      enableOperators();
+}
+
+function disableOperators() {
+  document.querySelectorAll("#operators button:not(#equal)").forEach(button => {
+    button.disabled = true;
+  })
+}
+
+function enableOperators() {
+  document.querySelectorAll("#operators button:not(#equal)").forEach(button => {
+    button.disabled = false;
+  })
 }
