@@ -17,6 +17,12 @@ function operate(a, b, operator) {
   return operations[operator];
 }
 
+document.ondblclick = function(e) {
+  e.preventDefault();
+}
+
+document.querySelector('#decimal').addEventListener('click', disableDecimal)
+
 document.querySelector("#clear-btn").addEventListener("click", () => {
   resetValues();
   result = null;
@@ -44,6 +50,7 @@ document.querySelectorAll("#operators button:not(#equal)").forEach((button) => {
     operatorInput = button.id;
     operatorHit = true;
     disableOperators();
+    enableDecimal();
     console.log(operatorInput);
   });
 });
@@ -78,6 +85,7 @@ function resetValues() {
   operatorInput = null;
   operatorHit = false;
   enableOperators();
+  enableDecimal();
 }
 
 function disableOperators() {
@@ -96,6 +104,14 @@ function enableOperators() {
       button.disabled = false;
       button.style.backgroundColor = "#FE9505";
     });
+}
+
+function disableDecimal() {
+  document.querySelector('#decimal').disabled = true;
+}
+
+function enableDecimal() {
+  document.querySelector('#decimal').disabled = false;
 }
 
 function chainEquation(button) {
